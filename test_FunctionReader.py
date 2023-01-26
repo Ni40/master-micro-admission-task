@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 from FunctionReader import FunctionReader
 
 # List of tuples (unparsed, parsed)
@@ -28,8 +29,8 @@ def test_FunctionReader_valid_inputs(funcs):
         try:
             value = eval(parsed_function)
         except:
-            value = None
-        assert f(x) == value
+            value = np.nan
+        assert f(x) == value or (np.isnan(f(x)) and np.isnan(value))
 
 
 invalid_functions = [

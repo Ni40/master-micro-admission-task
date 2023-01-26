@@ -1,4 +1,5 @@
 import re
+import numpy as np
 from typing import Callable, Optional
 
 
@@ -36,13 +37,13 @@ class FunctionReader:
             try:
                 return eval(func)
             except:
-                return None
+                return np.nan
         return f
 
     def get_function(self) -> Optional[Callable[[float], Optional[float]]]:
         """
-        Returns a function that can be used to compute f from x if it exists, else None\n
-        returns None if the string used was invalid\n
+        Returns a function that can be used to compute f from x if f(x) exists, else numpy.nan\n
+        returns None if the string used to generate function was invalid\n
         e.g:\n
         \tf = FunctionReader('x+3').get_function()\n
         \tprint(f(2)) # prints 5
