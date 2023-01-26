@@ -1,5 +1,5 @@
 import re
-import numpy as np
+import math
 from typing import Callable, Optional
 
 
@@ -24,8 +24,12 @@ class FunctionReader:
         self.valid = bool(pattern.fullmatch(func))
         if self.valid:
             # Add parenthesis around negative numbers
-            func = re.sub(
-                rf'(^|{operation})(-[0-9]+\.?[0-9]*)', r'\1(\2)', func)
+            func = re.sub(rf'(^|{operation})(-[0-9]+\.?[0-9]*)', r'\1(\2)', func)
+            # Create latex-like string for display
+            self.__function_string = '{{'
+            self.__function_string += re.sub(rf'([^(])({operation})', r'\1}\2{', func)
+            self.__function_string += '}}'
+            self.__function_string = self.__function_string.replace('(', '').replace(')', '')
             # Replace ^ with its python equivalent
             func = func.replace('^', '**')
             self.__function = self.__create_function(func)
@@ -37,7 +41,7 @@ class FunctionReader:
             try:
                 return eval(func)
             except:
-                return np.nan
+                return math.nan
         return f
 
     def get_function(self) -> Optional[Callable[[float], Optional[float]]]:
@@ -49,3 +53,9 @@ class FunctionReader:
         \tprint(f(2)) # prints 5
         """
         return self.__function if self.valid else None
+
+    def get_string(self) -> str:
+        """
+        returns a latex-like function string for display
+        """
+        return self.__function_string
