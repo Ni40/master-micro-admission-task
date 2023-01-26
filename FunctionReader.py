@@ -10,6 +10,7 @@ class FunctionReader:
         Parses a string and creates a function f(x) that can be used to evaluate the function for different values,\n
         f(x) is accesible via the method get_function()
         """
+        self.error_msg = ""
         # Allow for whitespace and capital X
         func = func.replace(' ', '').lower()
         # regex for valid string input
@@ -33,6 +34,10 @@ class FunctionReader:
             # Replace ^ with its python equivalent
             func = func.replace('^', '**')
             self.__function = self.__create_function(func)
+        else:
+            self.error_msg = "Unsupported syntax or invalid input"
+            if func.find('(') != -1 or func.find(')') != -1:
+                self.error_msg += ",\n parenthesis aren't supported"
 
     def __create_function(self, func: str) -> Callable[[float], Optional[float]]:
         # Create function to be used
@@ -56,6 +61,9 @@ class FunctionReader:
 
     def get_string(self) -> str:
         """
-        returns a latex-like function string for display
+        Returns a latex-like function string for display
         """
         return self.__function_string
+
+    def get_error(self) -> str:
+        return self.error_msg

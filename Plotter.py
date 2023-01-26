@@ -84,7 +84,7 @@ class MainWindow(QMainWindow):
             self.canvas.axes.set_title(f"$f\ (x)={self.function_reader.get_string()}$", math_fontfamily='stixsans', size=16)
             self.canvas.axes.plot(self.xdata, self.ydata, 'r')
         else:
-            self.canvas.axes.set_title(f"Function written incorrectly!", math_fontfamily='stixsans', size=16)
+            self.canvas.axes.set_title(self.function_reader.get_error(), math_fontfamily='stixsans', size=16)
         self.canvas.draw()
 
     def update_plot(self):
