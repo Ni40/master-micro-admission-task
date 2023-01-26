@@ -28,18 +28,18 @@ class MainWindow(QMainWindow):
         placeholder_function = 'x^2'
         placeholder_bounds = (-1, 1)
         main_layout = QVBoxLayout()
-        widget = QWidget(self)
-        widget.setLayout(main_layout)
-        self.setCentralWidget(widget)
+        self.widget = QWidget(self)
+        self.widget.setLayout(main_layout)
+        self.setCentralWidget(self.widget)
 
         # Configure canvas
-        self.canvas = MplCanvas(parent=widget,
+        self.canvas = MplCanvas(parent=self.widget,
                                 width=5, height=4, dpi=100)
         main_layout.addWidget(self.canvas)
 
         # Configure controls section
         controls_layout = QHBoxLayout()
-        controls_widget = QWidget(widget)
+        controls_widget = QWidget(self.widget)
         font = controls_widget.font()
         font.setPixelSize(14)
         font.setFamily('calibri')
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self.canvas.axes.cla()
         self.canvas.axes.grid()
         if self.function_reader.get_function():
-            self.canvas.axes.set_title(f"$f\ (x)={self.function_reader.get_string()}$", math_fontfamily='stixsans', size=16)
+            self.canvas.axes.set_title(f"$f\\ (x)={self.function_reader.get_string()}$", math_fontfamily='stixsans', size=16)
             self.canvas.axes.plot(self.xdata, self.ydata, 'r')
         else:
             self.canvas.axes.set_title(self.function_reader.get_error(), math_fontfamily='stixsans', size=16)
@@ -133,6 +133,7 @@ class MainWindow(QMainWindow):
         self.update_plot()
 
 
-app = QApplication(sys.argv)
-w = MainWindow()
-app.exec_()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    w = MainWindow()
+    app.exec_()
