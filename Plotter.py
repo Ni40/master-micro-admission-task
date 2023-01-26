@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        # Window configuration, main layout is a VBox
         self.setWindowTitle('Plotter App')
         placeholder_function = 'x^2'
         placeholder_bounds = (-1, 1)
@@ -31,10 +32,12 @@ class MainWindow(QMainWindow):
         widget.setLayout(main_layout)
         self.setCentralWidget(widget)
 
+        # Configure canvas
         self.canvas = MplCanvas(parent=widget,
                                 width=5, height=4, dpi=100)
         main_layout.addWidget(self.canvas)
 
+        # Configure controls section
         controls_layout = QHBoxLayout()
         controls_widget = QWidget(widget)
         font = controls_widget.font()
@@ -45,6 +48,7 @@ class MainWindow(QMainWindow):
         controls_widget.setMaximumHeight(50)
         main_layout.addWidget(controls_widget)
 
+        # Configure function line edit
         function_line_edit_label = QLabel('f(x)=')
         controls_layout.addWidget(function_line_edit_label)
         self.function_line_edit = QLineEdit(controls_widget)
@@ -52,6 +56,7 @@ class MainWindow(QMainWindow):
         self.function_line_edit.returnPressed.connect(self.function_changed)
         controls_layout.addWidget(self.function_line_edit)
 
+        # Configure x lower bound spinner
         lower_x_spinner_label = QLabel('Xmin')
         controls_layout.addWidget(lower_x_spinner_label)
         self.lower_x_spinner = QDoubleSpinBox(controls_widget)
@@ -61,6 +66,7 @@ class MainWindow(QMainWindow):
         self.lower_x_spinner.valueChanged.connect(self.bounds_changed)
         controls_layout.addWidget(self.lower_x_spinner)
 
+        # Configure x upper bound spinner
         upper_x_spinner_label = QLabel('Xmax')
         controls_layout.addWidget(upper_x_spinner_label)
         self.upper_x_spinner = QDoubleSpinBox(controls_widget)
@@ -70,6 +76,7 @@ class MainWindow(QMainWindow):
         self.upper_x_spinner.valueChanged.connect(self.bounds_changed)
         controls_layout.addWidget(self.upper_x_spinner)
 
+        # Configure intial function plotted
         self.n_data = 200
         self.x_range = placeholder_bounds
         self.function_reader = FunctionReader(placeholder_function)
@@ -78,6 +85,10 @@ class MainWindow(QMainWindow):
         self.show()
 
     def draw_plot(self):
+        """
+        Draws self.ydata vs self.xdata if valid\n
+        otherwise prints error message
+        """
         self.canvas.axes.cla()
         self.canvas.axes.grid()
         if self.function_reader.get_function():
@@ -88,6 +99,10 @@ class MainWindow(QMainWindow):
         self.canvas.draw()
 
     def update_plot(self):
+        """
+        Computes new y and x data and refreshes the plot accordingly\n
+        ignores the imaginary component of y if exists
+        """
         if self.function_reader.get_function():
             self.xdata = [((self.n_data - i) * self.x_range[0] + i * self.x_range[1])
                           / self.n_data for i in range(self.n_data + 1)]
@@ -96,11 +111,19 @@ class MainWindow(QMainWindow):
         self.draw_plot()
 
     def function_changed(self):
+        """
+        Function to be triggered on pressing enter in the f(x) line edit
+        """
         self.function_reader = FunctionReader(self.function_line_edit.text())
         self.update_plot()
 
     def bounds_changed(self):
+        """
+        Function to be triggered if one of the spinners' values changes
+        """
+        # Are the spinners appropriately ordered?
         if self.lower_x_spinner.value() >= self.upper_x_spinner.value():
+            # force into order if not in order
             if self.lower_x_spinner.value() != self.x_range[0]:
                 self.upper_x_spinner.setValue(self.lower_x_spinner.value() + 1)
             else:
