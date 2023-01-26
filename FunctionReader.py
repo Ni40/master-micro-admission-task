@@ -30,7 +30,9 @@ class FunctionReader:
             self.__function = self.__create_function(func)
 
     def __create_function(self, func: str) -> Callable[[float], Optional[float]]:
+        # Create function to be used
         def f(x: float) -> Optional[float]:
+            # to avoid div by zero errors
             try:
                 return eval(func)
             except:
@@ -39,9 +41,10 @@ class FunctionReader:
 
     def get_function(self) -> Optional[Callable[[float], Optional[float]]]:
         """
-        Returns a function that can be used to compute f from x\n
+        Returns a function that can be used to compute f from x if it exists, else None\n
+        returns None if the string used was invalid\n
         e.g:\n
-        f = FunctionReader('x+3').get_function()\n
-        print(f(2)) # prints 5
+        \tf = FunctionReader('x+3').get_function()\n
+        \tprint(f(2)) # prints 5
         """
         return self.__function if self.valid else None

@@ -1,4 +1,3 @@
-import re
 import pytest
 from FunctionReader import FunctionReader
 
@@ -22,8 +21,10 @@ def test_FunctionReader_valid_inputs(funcs):
     # Create function from unparsed string
     f_r_obj = FunctionReader(unparsed_function)
     f = f_r_obj.get_function()
+    # iterate over some values
     for i in range(-10, 11):
         x = i/10
+        # for div by zero errors
         try:
             value = eval(parsed_function)
         except:
