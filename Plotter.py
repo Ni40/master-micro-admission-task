@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         controls_widget = QWidget(widget)
         font = controls_widget.font()
         font.setPixelSize(14)
-        font.setFamily('camibri')
+        font.setFamily('calibri')
         controls_widget.setFont(font)
         controls_widget.setLayout(controls_layout)
         controls_widget.setMaximumHeight(50)
