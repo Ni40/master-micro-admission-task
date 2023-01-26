@@ -80,22 +80,20 @@ class MainWindow(QMainWindow):
     def draw_plot(self):
         self.canvas.axes.cla()
         self.canvas.axes.grid()
-        self.canvas.axes.set_title(f"$f\ (x)={self.function_reader.get_string()}$", math_fontfamily='stixsans', size=16)
-        self.canvas.axes.plot(self.xdata, self.ydata, 'r')
+        if self.function_reader.get_function():
+            self.canvas.axes.set_title(f"$f\ (x)={self.function_reader.get_string()}$", math_fontfamily='stixsans', size=16)
+            self.canvas.axes.plot(self.xdata, self.ydata, 'r')
+        else:
+            self.canvas.axes.set_title(f"Function written incorrectly!", math_fontfamily='stixsans', size=16)
         self.canvas.draw()
 
     def update_plot(self):
         if self.function_reader.get_function():
             self.xdata = [((self.n_data - i) * self.x_range[0] + i * self.x_range[1])
                           / self.n_data for i in range(self.n_data + 1)]
-            self.ydata = [self.function_reader.get_function()(x)
+            self.ydata = [self.function_reader.get_function()(x).real
                           for x in self.xdata]
-            self.draw_plot()
-        else:
-            self.canvas.axes.cla()
-            self.canvas.axes.grid()
-            self.canvas.axes.set_title(f"Function written incorrectly!", math_fontfamily='stixsans', size=16)
-            self.canvas.draw()
+        self.draw_plot()
 
     def function_changed(self):
         self.function_reader = FunctionReader(self.function_line_edit.text())
